@@ -26,3 +26,16 @@ A high-performance C++ order matching engine implementing:
 ## Architecture
 
 Order → OrderBook → Matching Engine → Trade History
+
+Client Order
+      |
+      v
+ OrderBook
+   /     \
+BuyBook SellBook
+      |
+      v
+ Matching Engine
+      |
+      v
+ Trade History
