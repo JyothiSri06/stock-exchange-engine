@@ -39,3 +39,14 @@ BuyBook SellBook
       |
       v
  Trade History
+
+
+
+ ## Future Enhancements
+
+- Node.js API Gateway
+- PostgreSQL Persistence
+- Redis Order Book Cache
+- WebSocket Streaming
+- React Trading Dashboard
+- Docker Deployment
