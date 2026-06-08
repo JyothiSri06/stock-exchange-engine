@@ -1,0 +1,3 @@
+g++ src/main.cpp src/Order.cpp -o exchange
+g++ src/main.cpp src/Order.cpp src/Trade.cpp -o exchange
+./exchange.exe
