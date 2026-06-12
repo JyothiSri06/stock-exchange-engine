@@ -1,23 +1,38 @@
 const {
     sendOrderToEngine
-} = require(
+} =
+require(
     "../services/engineService"
 );
 
-const createOrder = (
+const createOrder =
+async (
     req,
     res
 ) =>
 {
-    const order = req.body;
+    try
+    {
+        const result =
+            await
+            sendOrderToEngine(
+                req.body
+            );
 
-    sendOrderToEngine(order);
-
-    res.status(201).json({
-        message:
-        "Order received",
-        order
-    });
+        res.status(201)
+        .json({
+            engineResponse:
+                result
+        });
+    }
+    catch(error)
+    {
+        res.status(500)
+        .json({
+            error:
+                error.message
+        });
+    }
 };
 
 module.exports = {
