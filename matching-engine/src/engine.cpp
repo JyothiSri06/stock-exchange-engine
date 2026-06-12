@@ -2,7 +2,7 @@
 #include <string>
 
 #include "../include/json.hpp"
-
+#include "../include/Order.h"
 using json = nlohmann::json;
 
 int main()
@@ -11,8 +11,7 @@ int main()
 
     std::getline(
         std::cin,
-        input
-    );
+        input);
 
     json order =
         json::parse(input);
@@ -23,30 +22,45 @@ int main()
     std::string userId =
         order["userId"];
 
+    bool isBuy =
+        order["isBuy"];
+
     double price =
         order["price"];
 
     int quantity =
         order["quantity"];
 
+    Order newOrder(
+        orderId,
+        userId,
+        isBuy,
+        price,
+        quantity);
+
     std::cout
         << "Order ID: "
-        << orderId
+        << newOrder.orderId
         << std::endl;
 
     std::cout
         << "User ID: "
-        << userId
+        << newOrder.userId
+        << std::endl;
+
+    std::cout
+        << "Is Buy: "
+        << newOrder.isBuy
         << std::endl;
 
     std::cout
         << "Price: "
-        << price
+        << newOrder.price
         << std::endl;
 
     std::cout
         << "Quantity: "
-        << quantity
+        << newOrder.quantity
         << std::endl;
 
     return 0;

@@ -1,11 +1,11 @@
-#ifndef ORDER_H
-#define ORDER_H
+#pragma once
 
 #include <string>
 
 class Order
 {
 public:
+
     std::string orderId;
     std::string userId;
 
@@ -15,18 +15,11 @@ public:
 
     int quantity;
 
-    long timestamp;
-
     Order(
-        std::string orderId,
-        std::string userId,
+        const std::string& orderId,
+        const std::string& userId,
         bool isBuy,
         double price,
-        int quantity,
-        long timestamp
+        int quantity
     );
-
-    void printOrder();
 };
-
-#endif
