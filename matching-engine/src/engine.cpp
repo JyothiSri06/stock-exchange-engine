@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 
+#include "../include/OrderBook.h"
 #include "../include/json.hpp"
 #include "../include/Order.h"
 using json = nlohmann::json;
@@ -37,6 +38,15 @@ int main()
         isBuy,
         price,
         quantity);
+
+    OrderBook book;
+
+    book.addOrder(newOrder);
+    
+    std::cout
+    << "Orders Stored: "
+    << book.orders.size()
+    << std::endl;
 
     std::cout
         << "Order ID: "
