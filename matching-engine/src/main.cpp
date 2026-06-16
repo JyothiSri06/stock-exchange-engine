@@ -7,39 +7,40 @@ int main()
     orderBook.addBuyOrder(
         Order(
             "B1",
-            "BUYER1",
+            "USER1",
             true,
-            100,
-            100));
-    
+            -100,
+            50));
+
     orderBook.addBuyOrder(
         Order(
             "B2",
-            "BUYER2",
+            "USER2",
             true,
             100,
-            100));
+            -10));
 
-    orderBook.addSellOrder(
+    orderBook.addBuyOrder(
         Order(
-            "S1",
-            "SELLER1",
-            false,
-            105,
+            "B3",
+            "USER3",
+            true,
+            100,
             50));
-    
-    orderBook.addSellOrder(
+
+    orderBook.addBuyOrder(
         Order(
-            "S2",
-            "SELLER2",
-            false,
-            90,
-            80));
+            "B3",
+            "USER4",
+            true,
+            120,
+            20));
 
     orderBook.matchOrders();
     orderBook.printMarketSnapshot();
     orderBook.printBuyOrders();
     orderBook.printSellOrders();
     orderBook.printTrades();
+    orderBook.printMarketDepth();
     return 0;
 }

@@ -4,6 +4,11 @@
 void OrderBook::addBuyOrder(
     const Order &order)
 {
+    if (!validateOrder(order))
+    {
+        return;
+    }
+
     buyOrders.push(order);
     allOrders.emplace(
         order.orderId,
@@ -15,6 +20,10 @@ void OrderBook::addBuyOrder(
 void OrderBook::addSellOrder(
     const Order &order)
 {
+     if (!validateOrder(order))
+    {
+        return;
+    }
     sellOrders.push(order);
     allOrders.emplace(
         order.orderId,
@@ -373,3 +382,135 @@ void OrderBook::printAllOrders() const
             << std::endl;
     }
 }
+
+void OrderBook::modifyOrder(
+    const std::string& orderId,
+    double newPrice,
+    int newQuantity)
+{
+    auto it = allOrders.find(orderId);
+
+    if (it == allOrders.end())
+    {
+        std::cout
+            << "Order not found"
+            << std::endl;
+
+        return;
+    }
+
+    Order oldOrder = it->second;
+
+    cancelOrder(orderId);
+
+    Order modifiedOrder(
+        orderId,
+        oldOrder.userId,
+        oldOrder.isBuy,
+        newPrice,
+        newQuantity
+    );
+
+    if (modifiedOrder.isBuy)
+    {
+        addBuyOrder(modifiedOrder);
+    }
+    else
+    {
+        addSellOrder(modifiedOrder);
+    }
+
+    std::cout
+        << "Order Modified: "
+        << orderId
+        << std::endl;
+}
+
+void OrderBook::printMarketDepth() const
+{
+    std::map<double, int, std::greater<double>> buyDepth;
+    std::map<double, int> sellDepth;
+
+    auto buyTemp = buyOrders;
+
+    while (!buyTemp.empty())
+    {
+        Order order = buyTemp.top();
+
+        buyDepth[order.price] += order.quantity;
+
+        buyTemp.pop();
+    }
+
+    auto sellTemp = sellOrders;
+
+    while (!sellTemp.empty())
+    {
+        Order order = sellTemp.top();
+
+        sellDepth[order.price] += order.quantity;
+
+        sellTemp.pop();
+    }
+
+    std::cout
+        << "\n===== MARKET DEPTH =====\n";
+
+    std::cout
+        << "\nBUY SIDE\n";
+
+    for (const auto& level : buyDepth)
+    {
+        std::cout
+            << level.first
+            << " -> "
+            << level.second
+            << std::endl;
+    }
+
+    std::cout
+        << "\nSELL SIDE\n";
+
+    for (const auto& level : sellDepth)
+    {
+        std::cout
+            << level.first
+            << " -> "
+            << level.second
+            << std::endl;
+    }
+}
+
+bool OrderBook::validateOrder(
+    const Order& order) const
+{
+    if (order.price <= 0)
+    {
+        std::cout
+            << "Invalid Price"
+            << std::endl;
+
+        return false;
+    }
+
+    if (order.quantity <= 0)
+    {
+        std::cout
+            << "Invalid Quantity"
+            << std::endl;
+
+        return false;
+    }
+
+    if (allOrders.count(order.orderId))
+    {
+        std::cout
+            << "Duplicate Order ID"
+            << std::endl;
+
+        return false;
+    }
+
+    return true;
+}
+

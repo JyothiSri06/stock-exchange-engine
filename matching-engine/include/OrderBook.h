@@ -10,6 +10,7 @@
 #include "Trade.h"
 #include <unordered_set>
 #include <unordered_map>
+#include <map>
 class OrderBook
 {
 public:
@@ -32,7 +33,8 @@ public:
     std::vector<Trade> trades;
     std::unordered_set<std::string> cancelledOrders;
     std::vector<Order> orderHistory;
-
+    bool validateOrder(
+        const Order &order) const;
     void addBuyOrder(
         const Order &order);
 
@@ -59,4 +61,11 @@ public:
     void printOrderHistory() const;
 
     void printAllOrders() const;
+
+    void modifyOrder(
+        const std::string &orderId,
+        double newPrice,
+        int newQuantity);
+
+    void printMarketDepth() const;
 };
