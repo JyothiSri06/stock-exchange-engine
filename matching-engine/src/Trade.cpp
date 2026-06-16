@@ -1,36 +1,27 @@
 #include "../include/Trade.h"
-#include <iostream>
-
+int Trade::tradeCounter = 1;
 Trade::Trade(
-    std::string buyOrderId,
-    std::string sellOrderId,
+    const std::string &buyerId,
+    const std::string &sellerId,
     double price,
-    int quantity
-)
+    int quantity,
+    const std::string &timestamp)
 {
-    this->buyOrderId = buyOrderId;
-    this->sellOrderId = sellOrderId;
+
+    this->tradeId =
+        "T" +
+        std::to_string(tradeCounter);
+    tradeCounter++;
+
+    this->buyerId = buyerId;
+
+    this->sellerId = sellerId;
+
     this->price = price;
+
     this->quantity = quantity;
+
+    this->timestamp = timestamp;
 }
 
-void Trade::printTrade()
-{
-    std::cout << "TRADE EXECUTED" << std::endl;
-
-    std::cout << "Buy Order: "
-              << buyOrderId
-              << std::endl;
-
-    std::cout << "Sell Order: "
-              << sellOrderId
-              << std::endl;
-
-    std::cout << "Price: "
-              << price
-              << std::endl;
-
-    std::cout << "Quantity: "
-              << quantity
-              << std::endl;
-}
+ 

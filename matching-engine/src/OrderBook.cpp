@@ -1,8 +1,375 @@
 #include "../include/OrderBook.h"
-
-void OrderBook::addOrder(
-    const Order& order
-)
+#include <iostream>
+#include <ctime>
+void OrderBook::addBuyOrder(
+    const Order &order)
 {
-    orders.push_back(order);
+    buyOrders.push(order);
+    allOrders.emplace(
+        order.orderId,
+        order);
+
+    orderHistory.push_back(order);
+}
+
+void OrderBook::addSellOrder(
+    const Order &order)
+{
+    sellOrders.push(order);
+    allOrders.emplace(
+        order.orderId,
+        order);
+    orderHistory.push_back(order);
+}
+
+Order OrderBook::getBestBuy() const
+{
+    return buyOrders.top();
+}
+
+Order OrderBook::getBestSell() const
+{
+    return sellOrders.top();
+}
+
+void OrderBook::matchOrders()
+{
+    while (
+        !buyOrders.empty() &&
+        !sellOrders.empty())
+    {
+
+        while (
+            !buyOrders.empty() &&
+            cancelledOrders.count(
+                buyOrders.top().orderId))
+        {
+            buyOrders.pop();
+        }
+
+        while (
+            !sellOrders.empty() &&
+            cancelledOrders.count(
+                sellOrders.top().orderId))
+        {
+            sellOrders.pop();
+        }
+
+        if (
+            buyOrders.empty() ||
+            sellOrders.empty())
+        {
+            break;
+        }
+
+        Order bestBuy =
+            buyOrders.top();
+
+        Order bestSell =
+            sellOrders.top();
+
+        if (bestBuy.price < bestSell.price)
+        {
+            break;
+        }
+
+        int tradeQty =
+            std::min(
+                bestBuy.quantity,
+                bestSell.quantity);
+
+        std::time_t now = std::time(nullptr);
+        std::string timestamp = std::ctime(&now);
+
+        Trade trade(
+            bestBuy.userId,
+            bestSell.userId,
+            bestSell.price,
+            tradeQty,
+            timestamp);
+
+        trades.push_back(trade);
+        bestBuy.quantity -= tradeQty;
+        bestSell.quantity -= tradeQty;
+
+        if (bestBuy.quantity == 0)
+        {
+            bestBuy.status = FILLED;
+        }
+        else
+        {
+            bestBuy.status = PARTIALLY_FILLED;
+        }
+
+        if (bestSell.quantity == 0)
+        {
+            bestSell.status = FILLED;
+        }
+        else
+        {
+            bestSell.status = PARTIALLY_FILLED;
+        }
+
+        auto buyIt = allOrders.find(bestBuy.orderId);
+
+        if (buyIt != allOrders.end())
+        {
+            buyIt->second = bestBuy;
+        }
+
+        auto sellIt = allOrders.find(bestSell.orderId);
+
+        if (sellIt != allOrders.end())
+        {
+            sellIt->second = bestSell;
+        }
+
+        buyOrders.pop();
+        sellOrders.pop();
+
+        if (bestBuy.quantity > 0)
+        {
+            buyOrders.push(bestBuy);
+        }
+
+        if (bestSell.quantity > 0)
+        {
+            sellOrders.push(bestSell);
+        }
+        std::cout
+            << "Total Trades: "
+            << trades.size()
+            << std::endl;
+
+        std::cout
+            << "TRADE EXECUTED"
+            << std::endl;
+
+        std::cout
+            << "Buyer: "
+            << trade.buyerId
+            << std::endl;
+
+        std::cout
+            << "Seller: "
+            << trade.sellerId
+            << std::endl;
+
+        std::cout
+            << "Price: "
+            << trade.price
+            << std::endl;
+
+        std::cout
+            << "Quantity: "
+            << trade.quantity
+            << std::endl;
+    }
+}
+
+void OrderBook::printBuyOrders() const
+{
+    auto temp = buyOrders;
+
+    std::cout
+        << "\nBUY ORDERS\n";
+
+    while (!temp.empty())
+    {
+        Order order =
+            temp.top();
+
+        std::cout
+            << order.orderId
+            << " "
+            << order.price
+            << " "
+            << order.quantity
+            << std::endl;
+
+        temp.pop();
+    }
+}
+
+void OrderBook::printSellOrders() const
+{
+    auto temp = sellOrders;
+
+    std::cout
+        << "\nSELL ORDERS\n";
+
+    while (!temp.empty())
+    {
+        Order order =
+            temp.top();
+
+        std::cout
+            << order.orderId
+            << " "
+            << order.price
+            << " "
+            << order.quantity
+            << std::endl;
+
+        temp.pop();
+    }
+}
+
+void OrderBook::printTrades() const
+{
+    std::cout
+        << "\n===== TRADE HISTORY =====\n";
+
+    for (const Trade &trade : trades)
+    {
+        std::cout
+            << "Trade ID: "
+            << trade.tradeId
+            << std::endl;
+
+        std::cout
+            << "Buyer: "
+            << trade.buyerId
+            << std::endl;
+
+        std::cout
+            << "Seller: "
+            << trade.sellerId
+            << std::endl;
+
+        std::cout
+            << "Price: "
+            << trade.price
+            << std::endl;
+
+        std::cout
+            << "Quantity: "
+            << trade.quantity
+            << std::endl;
+
+        std::cout
+            << "Time: "
+            << trade.timestamp
+            << std::endl;
+
+        std::cout
+            << "------------------"
+            << std::endl;
+    }
+}
+
+void OrderBook::printMarketSnapshot() const
+{
+    std::cout
+        << "\n===== MARKET SNAPSHOT =====\n";
+    if (!buyOrders.empty())
+    {
+        std::cout
+            << "Best Buy: "
+            << buyOrders.top().price
+            << std::endl;
+    }
+    else
+    {
+        std::cout
+            << "Best Buy: NONE"
+            << std::endl;
+    }
+
+    if (!sellOrders.empty())
+    {
+        std::cout
+            << "Best Sell: "
+            << sellOrders.top().price
+            << std::endl;
+    }
+    else
+    {
+        std::cout
+            << "Best Sell: NONE"
+            << std::endl;
+    }
+
+    std::cout
+        << "Buy Orders: "
+        << buyOrders.size()
+        << std::endl;
+
+    std::cout
+        << "Sell Orders: "
+        << sellOrders.size()
+        << std::endl;
+}
+
+void OrderBook::cancelOrder(const std::string &orderId)
+
+{
+    cancelledOrders.insert(orderId);
+
+    if (allOrders.count(orderId))
+    {
+        auto it = allOrders.find(orderId);
+
+        if (it != allOrders.end())
+        {
+            it->second.status = CANCELLED;
+        }
+    }
+
+    std::cout
+        << "Cancelled Order: "
+        << orderId
+        << std::endl;
+}
+
+void OrderBook::printOrderHistory() const
+{
+    std::cout
+        << "\n===== ORDER HISTORY =====\n";
+
+    for (const Order &order : orderHistory)
+    {
+        std::cout
+            << "Order ID: "
+            << order.orderId
+            << std::endl;
+
+        std::cout
+            << "User: "
+            << order.userId
+            << std::endl;
+
+        std::cout
+            << "Price: "
+            << order.price
+            << std::endl;
+
+        std::cout
+            << "Quantity: "
+            << order.quantity
+            << std::endl;
+
+        std::cout
+            << "------------------"
+            << std::endl;
+    }
+}
+
+void OrderBook::printAllOrders() const
+{
+    std::cout
+        << "\n===== ALL ORDERS =====\n";
+
+    for (const auto &pair : allOrders)
+    {
+        const Order &order = pair.second;
+
+        std::cout
+            << order.orderId
+            << " "
+            << order.userId
+            << " "
+            << order.quantity
+            << std::endl;
+    }
 }

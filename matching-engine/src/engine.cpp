@@ -6,7 +6,7 @@
 #include "../include/Order.h"
 using json = nlohmann::json;
 
-int main()
+int testEngine()
 {
     std::string input;
 
@@ -41,12 +41,46 @@ int main()
 
     OrderBook book;
 
-    book.addOrder(newOrder);
-    
+    if (newOrder.isBuy)
+    {
+        book.addBuyOrder(
+            newOrder);
+    }
+    else
+    {
+        book.addSellOrder(
+            newOrder);
+    }  
+    book.matchOrders();
+    if (book.buyOrders.size() > 0)
+    {
+        Order bestBuy = book.getBestBuy();
+
+        std::cout
+            << "Best Buy: "
+            << bestBuy.price
+            << std::endl;
+    }
+
+    if (book.sellOrders.size() > 0)
+    {
+        Order bestSell = book.getBestSell();
+
+        std::cout
+            << "Best Sell: "
+            << bestSell.price
+            << std::endl;
+    }
+
     std::cout
-    << "Orders Stored: "
-    << book.orders.size()
-    << std::endl;
+        << "Buy Orders: "
+        << book.buyOrders.size()
+        << std::endl;
+
+    std::cout
+        << "Sell Orders: "
+        << book.sellOrders.size()
+        << std::endl;
 
     std::cout
         << "Order ID: "

@@ -1,13 +1,15 @@
-#ifndef SELL_COMPARATOR_H
-#define SELL_COMPARATOR_H
+#pragma once
 
 #include "Order.h"
 
-struct SellComparator
+class SellComparator
 {
-    bool operator()(const Order& a, const Order& b)
+public:
+    bool operator()(
+        const Order &a,
+        const Order &b) const
     {
-        if(a.price == b.price)
+        if (a.price == b.price)
         {
             return a.timestamp > b.timestamp;
         }
@@ -15,5 +17,3 @@ struct SellComparator
         return a.price > b.price;
     }
 };
-
-#endif

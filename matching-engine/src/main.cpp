@@ -4,53 +4,42 @@ int main()
 {
     OrderBook orderBook;
 
-    orderBook.addOrder(
+    orderBook.addBuyOrder(
         Order(
             "B1",
-            "BUYER",
+            "BUYER1",
             true,
             100,
+            100));
+    
+    orderBook.addBuyOrder(
+        Order(
+            "B2",
+            "BUYER2",
+            true,
             100,
-            1000
-        )
-    );
+            100));
 
-    orderBook.addOrder(
+    orderBook.addSellOrder(
         Order(
             "S1",
             "SELLER1",
             false,
-            95,
-            20,
-            1001
-        )
-    );
-
-    orderBook.addOrder(
+            105,
+            50));
+    
+    orderBook.addSellOrder(
         Order(
             "S2",
             "SELLER2",
             false,
-            96,
-            30,
-            1002
-        )
-    );
-
-    orderBook.addOrder(
-        Order(
-            "S3",
-            "SELLER3",
-            false,
-            97,
-            50,
-            1003
-        )
-    );
+            90,
+            80));
 
     orderBook.matchOrders();
-
+    orderBook.printMarketSnapshot();
+    orderBook.printBuyOrders();
+    orderBook.printSellOrders();
     orderBook.printTrades();
-
     return 0;
 }

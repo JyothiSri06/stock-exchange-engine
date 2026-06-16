@@ -1,7 +1,15 @@
 #pragma once
 
 #include <string>
+#include <ctime>
 
+enum OrderStatus
+{
+    OPEN,
+    PARTIALLY_FILLED,
+    FILLED,
+    CANCELLED
+};
 class Order
 {
 public:
@@ -14,6 +22,10 @@ public:
     double price;
 
     int quantity;
+
+    OrderStatus status;
+    
+    std::time_t timestamp;
 
     Order(
         const std::string& orderId,

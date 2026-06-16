@@ -1,16 +1,62 @@
+
 #pragma once
 
-#include <vector>
+#include <queue>
 
 #include "Order.h"
-
+#include "BuyComparator.h"
+#include "SellComparator.h"
+#include <vector>
+#include "Trade.h"
+#include <unordered_set>
+#include <unordered_map>
 class OrderBook
 {
 public:
+    std::priority_queue<
+        Order,
+        std::vector<Order>,
+        BuyComparator>
+        buyOrders;
 
-    std::vector<Order> orders;
+    std::priority_queue<
+        Order,
+        std::vector<Order>,
+        SellComparator>
+        sellOrders;
 
-    void addOrder(
-        const Order& order
-    );
+    std::unordered_map<
+        std::string,
+        Order>
+        allOrders;
+    std::vector<Trade> trades;
+    std::unordered_set<std::string> cancelledOrders;
+    std::vector<Order> orderHistory;
+
+    void addBuyOrder(
+        const Order &order);
+
+    void addSellOrder(
+        const Order &order);
+
+    void cancelOrder(
+        const std::string &orderId);
+
+    Order getBestBuy() const;
+
+    Order getBestSell() const;
+
+    void matchOrders();
+
+    void printBuyOrders() const;
+
+    void printSellOrders() const;
+
+    void printTrades() const;
+
+    void printMarketSnapshot() const;
+
+    void printOrderHistory() const;
+
+    void printAllOrders() const;
 };

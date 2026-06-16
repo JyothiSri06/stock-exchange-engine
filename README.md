@@ -1,52 +1,29 @@
-# Real-Time Stock Exchange Matching Engine
+# Stock Exchange Matching Engine
 
-A high-performance C++ order matching engine implementing:
+## Features
 
-- Price-Time Priority
+- Price-Time Priority Matching
+- Buy Order Book
+- Sell Order Book
 - Partial Fills
-- Multiple Matches
-- Order Cancellation (Lazy Deletion)
+- Order Status Tracking
 - Trade History
+- Order History
+- Lazy Cancellation
+- Market Snapshot
 
-## Technologies
+## Tech Stack
 
 - C++
 - STL
 - Priority Queue
 - Unordered Map
+- Unordered Set
 
-## Features
+## Build
 
-- Buy Order Book
-- Sell Order Book
-- Matching Engine
-- Trade Execution
-- Cancellation Support
+g++ src/main.cpp src/Order.cpp src/OrderBook.cpp src/Trade.cpp -o exchange.exe
 
-## Architecture
+## Run
 
-Order → OrderBook → Matching Engine → Trade History
-
-Client Order
-      |
-      v
- OrderBook
-   /     \
-BuyBook SellBook
-      |
-      v
- Matching Engine
-      |
-      v
- Trade History
-
-
-
- ## Future Enhancements
-
-- Node.js API Gateway
-- PostgreSQL Persistence
-- Redis Order Book Cache
-- WebSocket Streaming
-- React Trading Dashboard
-- Docker Deployment
+./exchange.exe

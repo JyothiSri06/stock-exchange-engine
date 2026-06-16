@@ -1,27 +1,28 @@
-#ifndef TRADE_H
-#define TRADE_H
+#pragma once
 
 #include <string>
 
 class Trade
 {
 public:
-    std::string buyOrderId;
+    static int tradeCounter;
 
-    std::string sellOrderId;
+    std::string tradeId;
+
+    std::string buyerId;
+
+    std::string sellerId;
+
+    std::string timestamp;
 
     double price;
 
     int quantity;
 
     Trade(
-        std::string buyOrderId,
-        std::string sellOrderId,
+        const std::string &buyerId,
+        const std::string &sellerId,
         double price,
-        int quantity
-    );
-
-    void printTrade();
+        int quantity,
+        const std::string &timestamp);
 };
-
-#endif

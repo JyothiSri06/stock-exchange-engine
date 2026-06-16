@@ -17,4 +17,8 @@ Order::Order(
     this->price = price;
 
     this->quantity = quantity;
-}
+
+    this->status = OPEN;
+
+    this->timestamp = std::time(nullptr);
+} 
