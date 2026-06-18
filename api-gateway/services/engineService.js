@@ -1,63 +1,36 @@
-const path = require("path");
-const { spawn } =
-require("child_process");
+const fs =
+    require("fs");
 
-const sendOrderToEngine =
-(order) =>
-{
-    return new Promise(
-        (resolve, reject) =>
-        {
-            const enginePath =
-    path.join(
-        __dirname,
-        "..",
-        "..",
-        "matching-engine",
-        "exchange.exe"
-    );
+exports.sendOrderToEngine =
+    (order) => {
 
-console.log(enginePath);
+        const filePath =
+            "./data/orders.json";
 
-const engine =
-    spawn(enginePath);
-
-            let output = "";
-
-            engine.stdin.write(
-                JSON.stringify(order)
+        const orders =
+            JSON.parse(
+                fs.readFileSync(
+                    filePath,
+                    "utf8"
+                )
             );
 
-            engine.stdin.end();
+        orders.push(order);
 
-            engine.stdout.on(
-                "data",
-                (data) =>
-                {
-                    output +=
-                    data.toString();
-                }
-            );
+        fs.writeFileSync(
+            filePath,
+            JSON.stringify(
+                orders,
+                null,
+                2
+            )
+        );
 
-            engine.on(
-                "close",
-                () =>
-                {
-                    resolve(output);
-                }
-            );
+        console.log(
+            "ORDER WRITTEN TO FILE"
+        );
 
-            engine.on(
-                "error",
-                (error) =>
-                {
-                    reject(error);
-                }
-            );
-        }
-    );
-};
-
-module.exports = {
-    sendOrderToEngine
-};
+        return {
+            accepted: true
+        };
+    };

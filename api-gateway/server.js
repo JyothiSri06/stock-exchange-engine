@@ -1,16 +1,37 @@
-const express =
-require("express");
+require("dotenv").config();
 
-const app =
-express();
+const express = require("express");
 
-app.use(
-    express.json()
-);
+const app = express();
+
+app.use(express.json());
+
+const healthRoutes =
+    require("./routes/healthRoutes");
+
+const snapshotRoutes =
+    require("./routes/snapshotRoutes");
+
+const tradeRoutes =
+    require("./routes/tradeRoutes");
 
 const orderRoutes =
-require(
-    "./routes/orderRoutes"
+    require("./routes/orderRoutes");
+
+
+app.use(
+    "/health",
+    healthRoutes
+);
+
+app.use(
+    "/snapshot",
+    snapshotRoutes
+);
+
+app.use(
+    "/trades",
+    tradeRoutes
 );
 
 app.use(
@@ -18,12 +39,10 @@ app.use(
     orderRoutes
 );
 
-app.listen(
-    3000,
-    () =>
-    {
-        console.log(
-            "Server running on port 3000"
-        );
-    }
-);
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(
+        `Server running on port ${PORT}`
+    );
+}); 
