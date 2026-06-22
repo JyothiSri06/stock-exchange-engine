@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+
+    container_name: exchange_postgres
+
+    environment:
+      POSTGRES_DB: exchange_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+
+    container_name: exchange_redis
+
+    ports:
+      - "6379:6379"
+  
+  api:
+    build:
+      context: ./api-gateway
+
+    container_name: exchange_api
+
+    ports:
+      - "3000:3000"
+
+    env_file:
+      - ./api-gateway/.env
+
+    depends_on:
+      - postgres
+      - redis

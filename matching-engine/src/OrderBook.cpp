@@ -1,6 +1,11 @@
 #include "../include/OrderBook.h"
 #include <iostream>
 #include <ctime>
+#include <fstream>
+#include "../include/json.hpp"
+
+using json = nlohmann::json;
+
 void OrderBook::addBuyOrder(
     const Order &order)
 {
@@ -20,7 +25,7 @@ void OrderBook::addBuyOrder(
 void OrderBook::addSellOrder(
     const Order &order)
 {
-     if (!validateOrder(order))
+    if (!validateOrder(order))
     {
         return;
     }
@@ -98,6 +103,35 @@ void OrderBook::matchOrders()
             timestamp);
 
         trades.push_back(trade);
+
+        std::cout
+            << "WRITING TRADE TO JSON"
+            << std::endl;
+            
+        std::ifstream inputFile(
+            "../api-gateway/data/trades.json");
+
+        json tradeHistory;
+
+        inputFile >> tradeHistory;
+
+        inputFile.close();
+
+        tradeHistory.push_back({{"tradeId", trade.tradeId},
+                                {"buyerId", trade.buyerId},
+                                {"sellerId", trade.sellerId},
+                                {"price", trade.price},
+                                {"quantity", trade.quantity},
+                                {"timestamp", trade.timestamp}});
+
+        std::ofstream outputFile(
+            "../api-gateway/data/trades.json");
+
+        outputFile
+            << tradeHistory.dump(4);
+
+        outputFile.close();
+
         bestBuy.quantity -= tradeQty;
         bestSell.quantity -= tradeQty;
 
@@ -384,7 +418,7 @@ void OrderBook::printAllOrders() const
 }
 
 void OrderBook::modifyOrder(
-    const std::string& orderId,
+    const std::string &orderId,
     double newPrice,
     int newQuantity)
 {
@@ -408,8 +442,7 @@ void OrderBook::modifyOrder(
         oldOrder.userId,
         oldOrder.isBuy,
         newPrice,
-        newQuantity
-    );
+        newQuantity);
 
     if (modifiedOrder.isBuy)
     {
@@ -459,7 +492,7 @@ void OrderBook::printMarketDepth() const
     std::cout
         << "\nBUY SIDE\n";
 
-    for (const auto& level : buyDepth)
+    for (const auto &level : buyDepth)
     {
         std::cout
             << level.first
@@ -471,7 +504,7 @@ void OrderBook::printMarketDepth() const
     std::cout
         << "\nSELL SIDE\n";
 
-    for (const auto& level : sellDepth)
+    for (const auto &level : sellDepth)
     {
         std::cout
             << level.first
@@ -482,7 +515,7 @@ void OrderBook::printMarketDepth() const
 }
 
 bool OrderBook::validateOrder(
-    const Order& order) const
+    const Order &order) const
 {
     if (order.price <= 0)
     {
@@ -513,4 +546,3 @@ bool OrderBook::validateOrder(
 
     return true;
 }
-

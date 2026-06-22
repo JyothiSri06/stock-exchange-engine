@@ -2,6 +2,8 @@ const engineService = require("../services/engineService");
 
 const orderService = require("../services/orderService");
 
+const { getIO } = require("../socket");
+
 exports.getOrders = async (req, res) => {
 
     const orders =
@@ -20,6 +22,17 @@ exports.createOrder = async (req, res) => {
   }
 
   const existingOrder = await orderService.findOrderById(orderId);
+
+  getIO().emit(
+  "new-order",
+  {
+    orderId,
+    userId,
+    price,
+    quantity,
+    status: "OPEN"
+  }
+);
 
   if (existingOrder) {
     return res.status(400).json({

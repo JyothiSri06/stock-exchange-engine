@@ -1,48 +1,57 @@
 require("dotenv").config();
 
 const express = require("express");
+const http = require("http");
 
 const app = express();
-
 app.use(express.json());
 
-const healthRoutes =
-    require("./routes/healthRoutes");
+const server = http.createServer(app);
 
-const snapshotRoutes =
-    require("./routes/snapshotRoutes");
+const { Server } = require("socket.io");
 
-const tradeRoutes =
-    require("./routes/tradeRoutes");
+const { setIO } = require("./socket");
 
-const orderRoutes =
-    require("./routes/orderRoutes");
+const { monitorTrades } = require("./services/tradeBroadcastService");
 
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
-app.use(
-    "/health",
-    healthRoutes
-);
+setIO(io);
 
-app.use(
-    "/snapshot",
-    snapshotRoutes
-);
+const healthRoutes = require("./routes/healthRoutes");
 
-app.use(
-    "/trades",
-    tradeRoutes
-);
+const snapshotRoutes = require("./routes/snapshotRoutes");
 
-app.use(
-    "/orders",
-    orderRoutes
-);
+const tradeRoutes = require("./routes/tradeRoutes");
+
+const orderRoutes = require("./routes/orderRoutes");
+
+const { warmCache } = require("./services/cacheWarmupService");
+
+app.use("/health", healthRoutes);
+
+app.use("/snapshot", snapshotRoutes);
+
+app.use("/trades", tradeRoutes);
+
+app.use("/orders", orderRoutes);
+
+io.on("connection", (socket) => {
+  console.log("CLIENT CONNECTED:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("CLIENT DISCONNECTED:", socket.id);
+  });
+});
 
 const PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(
-        `Server running on port ${PORT}`
-    );
-}); 
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+monitorTrades();

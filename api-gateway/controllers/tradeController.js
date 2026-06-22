@@ -1,10 +1,10 @@
 const tradeService =
     require("../services/tradeService");
 
-exports.getTrades = (req, res) => {
+exports.getTrades = async (req, res) => {
 
     const trades =
-        tradeService.getTrades();
+        await tradeService.getTrades();
 
     res.json(trades);
 };

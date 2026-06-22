@@ -31,7 +31,9 @@ exports.getOrders = async () => {
 
   const result = await pool.query("SELECT * FROM orders");
 
-  await client.set("orders", JSON.stringify(result.rows));
+  await client.set("orders", JSON.stringify(result.rows), {
+    EX: 60,
+  });
 
   return result.rows;
 };
@@ -68,18 +70,36 @@ exports.addOrder = async (order) => {
   );
   const result = await pool.query("SELECT * FROM orders");
 
-  await client.set("orders", JSON.stringify(result.rows));
+  await client.set(`order:${order.orderId}`, JSON.stringify(order), {
+    EX: 60,
+  });
 };
 
 exports.findOrderById = async (orderId) => {
+  const cachedOrder = await client.get(`order:${orderId}`);
+
+  if (cachedOrder) {
+    console.log("ORDER FROM REDIS");
+
+    return JSON.parse(cachedOrder);
+  }
+
+  console.log("ORDER FROM POSTGRES");
+
   const result = await pool.query(
     `
-            SELECT *
-            FROM orders
-            WHERE order_id = $1
-            `,
+      SELECT *
+      FROM orders
+      WHERE order_id = $1
+      `,
     [orderId],
   );
+
+  if (result.rows[0]) {
+    await client.set(`order:${orderId}`, JSON.stringify(result.rows[0]), {
+      EX: 60,
+    });
+  }
 
   return result.rows[0];
 };

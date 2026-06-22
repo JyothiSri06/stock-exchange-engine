@@ -1,0 +1,66 @@
+[
+    {
+        "buyerId": "BUYER50",
+        "price": 95.0,
+        "quantity": 10,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 17:04:04 2026\n",
+        "tradeId": "T1"
+    },
+    {
+        "buyerId": "BUYER99",
+        "price": 95.0,
+        "quantity": 20,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 17:04:04 2026\n",
+        "tradeId": "T2"
+    },
+    {
+        "buyerId": "BUYER50",
+        "price": 95.0,
+        "quantity": 10,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 22:14:11 2026\n",
+        "tradeId": "T1"
+    },
+    {
+        "buyerId": "BUYER99",
+        "price": 95.0,
+        "quantity": 20,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 22:14:11 2026\n",
+        "tradeId": "T2"
+    },
+    {
+        "buyerId": "BUYER50",
+        "price": 95.0,
+        "quantity": 10,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 22:15:14 2026\n",
+        "tradeId": "T1"
+    },
+    {
+        "buyerId": "BUYER99",
+        "price": 95.0,
+        "quantity": 20,
+        "sellerId": "SELLER1",
+        "timestamp": "Fri Jun 19 22:15:14 2026\n",
+        "tradeId": "T2"
+    },
+    {
+        "buyerId": "BUYER50",
+        "price": 95.0,
+        "quantity": 10,
+        "sellerId": "SELLER1",
+        "timestamp": "Sat Jun 20 11:10:53 2026\n",
+        "tradeId": "T1"
+    },
+    {
+        "buyerId": "BUYER99",
+        "price": 95.0,
+        "quantity": 20,
+        "sellerId": "SELLER1",
+        "timestamp": "Sat Jun 20 11:10:53 2026\n",
+        "tradeId": "T2"
+    }
+]
