@@ -5,11 +5,17 @@ const orderService = require("../services/orderService");
 const { getIO } = require("../socket");
 
 exports.getOrders = async (req, res) => {
-
-    const orders =
-        await orderService.getOrders();
+  try {
+    const orders = await orderService.getAllOrders();
 
     res.json(orders);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to fetch orders",
+    });
+  }
 };
 
 exports.createOrder = async (req, res) => {
@@ -22,17 +28,6 @@ exports.createOrder = async (req, res) => {
   }
 
   const existingOrder = await orderService.findOrderById(orderId);
-
-  getIO().emit(
-  "new-order",
-  {
-    orderId,
-    userId,
-    price,
-    quantity,
-    status: "OPEN"
-  }
-);
 
   if (existingOrder) {
     return res.status(400).json({
@@ -47,13 +42,21 @@ exports.createOrder = async (req, res) => {
     status: "OPEN",
   });
 
+  getIO().emit("new-order", {
+    orderId,
+    userId,
+    price,
+    quantity,
+    status: "OPEN",
+  });
+
   engineService.sendOrderToEngine({
     orderId,
     userId,
     price,
     quantity,
   });
-  
+
   res.json({
     message: "Order stored",
   });

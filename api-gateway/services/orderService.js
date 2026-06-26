@@ -134,3 +134,15 @@ exports.updateOrder = async (orderId, price, quantity) => {
 
   return result.rowCount > 0;
 };
+
+exports.getAllOrders = async () => {
+
+    const result = await pool.query(`
+        SELECT *
+        FROM orders
+        ORDER BY order_id DESC
+    `);
+
+    return result.rows;
+};
+

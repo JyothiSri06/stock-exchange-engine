@@ -1,13 +1,16 @@
-const express = require("express");
+const express =
+require("express");
 
-const router = express.Router();
+const router =
+express.Router();
 
 const tradeController =
-    require("../controllers/tradeController");
+require("../controllers/tradeController");
 
 router.get(
     "/",
     tradeController.getTrades
 );
 
-module.exports = router;
+module.exports =
+router;

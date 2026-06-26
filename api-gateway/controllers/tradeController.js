@@ -1,10 +1,25 @@
 const tradeService =
-    require("../services/tradeService");
+require("../services/tradeService");
 
-exports.getTrades = async (req, res) => {
+exports.getTrades = (req, res) => {
 
-    const trades =
-        await tradeService.getTrades();
+    try {
 
-    res.json(trades);
+        const trades =
+            tradeService.getTrades();
+
+        res.json(trades);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to fetch trades"
+        });
+
+    }
+
 };
