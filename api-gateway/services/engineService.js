@@ -15,8 +15,10 @@ exports.sendOrderToEngine =
                 )
             );
 
+        console.log("ENGINE ORDER:", order);
+        
         orders.push(order);
-
+        
         fs.writeFileSync(
             filePath,
             JSON.stringify(

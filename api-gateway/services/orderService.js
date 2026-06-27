@@ -1,22 +1,7 @@
 const pool = require("../database/db");
 const client = require("../cache/redisClient");
 
-const orders = [
-  {
-    orderId: "B1",
-    userId: "BUYER1",
-    price: 100,
-    quantity: 60,
-    status: "OPEN",
-  },
-  {
-    orderId: "B2",
-    userId: "BUYER2",
-    price: 100,
-    quantity: 40,
-    status: "OPEN",
-  },
-];
+const orders = [ ];
 
 exports.getOrders = async () => {
   const cachedOrders = await client.get("orders");

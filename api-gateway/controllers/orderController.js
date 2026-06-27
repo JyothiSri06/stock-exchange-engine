@@ -19,9 +19,12 @@ exports.getOrders = async (req, res) => {
 };
 
 exports.createOrder = async (req, res) => {
-  const { orderId, userId, price, quantity } = req.body;
+  const { orderId, userId, isBuy, price, quantity } = req.body;
 
-  if (!orderId || !userId || !price || !quantity) {
+  console.log("REQ BODY:", req.body);
+  console.log("isBuy =", isBuy);
+
+  if (!orderId || !userId || isBuy === undefined || !price || !quantity) {
     return res.status(400).json({
       error: "Missing required fields",
     });
@@ -37,6 +40,7 @@ exports.createOrder = async (req, res) => {
   await orderService.addOrder({
     orderId,
     userId,
+    isBuy,
     price,
     quantity,
     status: "OPEN",
@@ -45,6 +49,7 @@ exports.createOrder = async (req, res) => {
   getIO().emit("new-order", {
     orderId,
     userId,
+    isBuy,
     price,
     quantity,
     status: "OPEN",
@@ -53,6 +58,7 @@ exports.createOrder = async (req, res) => {
   engineService.sendOrderToEngine({
     orderId,
     userId,
+    isBuy,
     price,
     quantity,
   });

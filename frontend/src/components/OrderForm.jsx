@@ -6,6 +6,8 @@ function OrderForm() {
   const [userId, setUserId] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [isBuy, setIsBuy] = useState(true);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,6 +16,7 @@ function OrderForm() {
       const result = await createOrder({
         orderId,
         userId,
+        isBuy,
         price: Number(price),
         quantity: Number(quantity),
       });
@@ -55,6 +58,17 @@ function OrderForm() {
           setUserId(e.target.value)
         }
       />
+
+      <br />
+      <br />
+
+      <select
+        value={isBuy}
+        onChange={(e) => setIsBuy(e.target.value === "true")}
+      >
+        <option value="true">BUY</option>
+        <option value="false">SELL</option>
+      </select>
 
       <br />
       <br />

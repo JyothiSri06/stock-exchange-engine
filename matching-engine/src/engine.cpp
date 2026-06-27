@@ -5,7 +5,12 @@
 #include "../include/json.hpp"
 #include "../include/Order.h"
 #include <fstream>
+#include <thread>
+#include <chrono>
 using json = nlohmann::json;
+
+OrderBook orderBook;
+int processedOrders = 0;
 
 void loadOrders()
 {
@@ -30,10 +35,9 @@ void loadOrders()
         << orders.size()
         << std::endl;
 
-    OrderBook orderBook;
-
-    for (auto &item : orders)
+    for (int i = processedOrders; i < orders.size(); i++)
     {
+        auto &item = orders[i];
         std::string orderId =
             item["orderId"];
 
@@ -66,137 +70,51 @@ void loadOrders()
         }
     }
 
+    processedOrders = orders.size();
+
     orderBook.printBuyOrders();
 
     orderBook.printSellOrders();
 
-    orderBook.matchOrders();
+    if (processedOrders < orders.size())
+    {
+        // load new orders
+
+        processedOrders = orders.size();
+
+        orderBook.matchOrders();
+    }
 
     orderBook.printTrades();
     std::cout
-    << "\n===== ENGINE SUMMARY =====\n";
+        << "\n===== ENGINE SUMMARY =====\n";
 
-std::cout
-    << "Trades: "
-    << orderBook.trades.size()
-    << std::endl;
+    std::cout
+        << "Trades: "
+        << orderBook.trades.size()
+        << std::endl;
 
-std::cout
-    << "Buy Orders Remaining: "
-    << orderBook.buyOrders.size()
-    << std::endl;
+    std::cout
+        << "Buy Orders Remaining: "
+        << orderBook.buyOrders.size()
+        << std::endl;
 
-std::cout
-    << "Sell Orders Remaining: "
-    << orderBook.sellOrders.size()
-    << std::endl;
+    std::cout
+        << "Sell Orders Remaining: "
+        << orderBook.sellOrders.size()
+        << std::endl;
 }
 
 int main()
 {
 
-    // std::string input;
+    while (true)
+    {
+        loadOrders();
 
-    // std::getline(
-    //     std::cin,
-    //     input);
-
-    // json order =
-    //     json::parse(input);
-
-    // std::string orderId =
-    //     order["orderId"];
-
-    // std::string userId =
-    //     order["userId"];
-
-    // bool isBuy =
-    //     order["isBuy"];
-
-    // double price =
-    //     order["price"];
-
-    // int quantity =
-    //     order["quantity"];
-
-    // Order newOrder(
-    //     orderId,
-    //     userId,
-    //     isBuy,
-    //     price,
-    //     quantity);
-
-    // OrderBook book;
-
-    // if (newOrder.isBuy)
-    // {
-    //     book.addBuyOrder(
-    //         newOrder);
-    // }
-    // else
-    // {
-    //     book.addSellOrder(
-    //         newOrder);
-    // }
-    // book.matchOrders();
-    // if (book.buyOrders.size() > 0)
-    // {
-    //     Order bestBuy = book.getBestBuy();
-
-    //     std::cout
-    //         << "Best Buy: "
-    //         << bestBuy.price
-    //         << std::endl;
-    // }
-
-    // if (book.sellOrders.size() > 0)
-    // {
-    //     Order bestSell = book.getBestSell();
-
-    //     std::cout
-    //         << "Best Sell: "
-    //         << bestSell.price
-    //         << std::endl;
-    // }
-
-    // std::cout
-    //     << "Buy Orders: "
-    //     << book.buyOrders.size()
-    //     << std::endl;
-
-    // std::cout
-    //     << "Sell Orders: "
-    //     << book.sellOrders.size()
-    //     << std::endl;
-
-    // std::cout
-    //     << "Order ID: "
-    //     << newOrder.orderId
-    //     << std::endl;
-
-    // std::cout
-    //     << "User ID: "
-    //     << newOrder.userId
-    //     << std::endl;
-
-    // std::cout
-    //     << "Is Buy: "
-    //     << newOrder.isBuy
-    //     << std::endl;
-
-    // std::cout
-    //     << "Price: "
-    //     << newOrder.price
-    //     << std::endl;
-
-    // std::cout
-    //     << "Quantity: "
-    //     << newOrder.quantity
-    //     << std::endl;
-
-    loadOrders();
+        std::this_thread::sleep_for(
+            std::chrono::seconds(2));
+    }
 
     return 0;
 }
-
- 
