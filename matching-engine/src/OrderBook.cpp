@@ -107,7 +107,7 @@ void OrderBook::matchOrders()
         std::cout
             << "WRITING TRADE TO JSON"
             << std::endl;
-            
+
         std::ifstream inputFile(
             "../api-gateway/data/trades.json");
 
@@ -169,6 +169,12 @@ void OrderBook::matchOrders()
 
         buyOrders.pop();
         sellOrders.pop();
+
+        std::cout << "Remaining Buy Qty : "
+                  << bestBuy.quantity << std::endl;
+
+        std::cout << "Remaining Sell Qty : "
+                  << bestSell.quantity << std::endl;
 
         if (bestBuy.quantity > 0)
         {
