@@ -1,11 +1,7 @@
 function TradesTable({ trades }) {
-
     return (
-
         <table border="1">
-
             <thead>
-
                 <tr>
 
                     <th>Trade ID</th>
@@ -15,13 +11,10 @@ function TradesTable({ trades }) {
                     <th>Quantity</th>
 
                 </tr>
-
             </thead>
 
             <tbody>
-
                 {trades.map((trade,index) => (
-
                     <tr key={`${trade.tradeId}-${index}`}>
                         <td>{trade.tradeId}</td>
                         <td>{trade.buyerId}</td>
@@ -29,13 +22,9 @@ function TradesTable({ trades }) {
                         <td>{trade.price}</td>
                         <td>{trade.quantity}</td>
                     </tr>
-
                 ))}
-
             </tbody>
-
         </table>
-
     );
 
 }

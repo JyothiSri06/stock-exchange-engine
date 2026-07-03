@@ -3,15 +3,15 @@ const client =
 
 async function test()
 {
-    await client.set(
-        "test",
-        "hello"
-    );
+    // await client.set(
+    //     "test",
+    //     "hello"
+    // );
 
-    const value =
-        await client.get(
-            "test"
-        );
+    // const value =
+    //     await client.get(
+    //         "test"
+    //     );
 
     console.log(value);
 

@@ -1,46 +1,36 @@
 const fs = require("fs");
-
-const { getIO } =
-  require("../socket");
+const { getIO } = require("../socket");
 
 let lastTradeCount = 0;
 
+try {
+    const data = fs.readFileSync("./data/trades.json", "utf8");
+    const trades = JSON.parse(data);
+    lastTradeCount = trades.length;
+} catch (err) {
+    lastTradeCount = 0;
+}
+
 exports.monitorTrades = () => {
 
-  setInterval(() => {
+    setInterval(() => {
 
-    const data =
-      fs.readFileSync(
-        "./data/trades.json",
-        "utf8"
-      );
+        const data = fs.readFileSync("./data/trades.json","utf8");
 
-    const trades =
-      JSON.parse(data);
+        const trades = JSON.parse(data);
 
-    if (
-      trades.length >
-      lastTradeCount
-    )
-    {
-      const newestTrade =
-        trades[
-          trades.length - 1
-        ];
+        if (trades.length > lastTradeCount) {
 
-      getIO().emit(
-        "new-trade",
-        newestTrade
-      );
+            for (let i = lastTradeCount; i < trades.length; i++) {
 
-      console.log(
-        "TRADE BROADCASTED"
-      );
+                getIO().emit("new-trade", trades[i]);
 
-      lastTradeCount =
-        trades.length;
-    }
+                console.log(`[SOCKET] Broadcasted ${trades[i].tradeId}`);
+            }
 
-  }, 2000);
+            lastTradeCount = trades.length;
+        }
+
+    },2000);
 
 };

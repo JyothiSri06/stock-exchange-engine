@@ -24,8 +24,9 @@ function Dashboard() {
 
       const data = await getOrders();
 
-      console.log("Orders:", data);
-
+      console.log(
+        `[FRONTEND] Loaded ${data.length} orders`
+      );
       setOrders(data);
 
     } catch (error) {
@@ -42,8 +43,9 @@ function Dashboard() {
 
       const data = await getTrades();
 
-      console.log(data[0]);
-
+      console.log(
+        `[FRONTEND] Loaded ${data.length} trades`
+      );
       setTrades(data);
 
     }
@@ -56,37 +58,40 @@ function Dashboard() {
 
   }
 
+
   useEffect(() => {
 
     loadOrders();
-
     loadTrades();
 
-    socket.on("new-order", () => {
+    const onConnect = () => {
+      console.log("Connected:", socket.id);
+    };
 
-      console.log("New Order Received");
-
+    const onNewOrder = () => {
+      console.log("[FRONTEND] New Order");
       loadOrders();
+    };
 
-    });
+    const onNewTrade = () => {
+      console.log("[FRONTEND] New Trade");
+      loadTrades();
+    };
+
+    socket.on("connect", onConnect);
+    socket.on("new-order", onNewOrder);
+    socket.on("new-trade", onNewTrade);
 
     return () => {
-
-      socket.off("new-order");
+      socket.off("connect", onConnect);
+      socket.off("new-order", onNewOrder);
+      socket.off("new-trade", onNewTrade);
     };
 
   }, []);
 
-  useEffect(() => {
 
-    socket.on("connect", () => {
-
-      console.log("Connected:", socket.id);
-
-    });
-
-  }, []);
-
+  
   return (
     <div>
 

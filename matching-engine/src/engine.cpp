@@ -30,11 +30,6 @@ void loadOrders()
 
     file >> orders;
 
-    std::cout
-        << "Orders Loaded: "
-        << orders.size()
-        << std::endl;
-
     if (processedOrders == orders.size())
     {
         return;
@@ -44,6 +39,15 @@ void loadOrders()
 
     if (newOrders > 0)
     {
+        std::cout
+            << "processedOrders = "
+            << processedOrders
+            << std::endl;
+
+        std::cout
+            << "orders.size() = "
+            << orders.size()
+            << std::endl;
 
         for (int i = processedOrders; i < orders.size(); i++)
         {
@@ -78,6 +82,11 @@ void loadOrders()
             {
                 orderBook.addSellOrder(order);
             }
+
+            std::cout
+                << "Loading "
+                << item["orderId"]
+                << std::endl;
         }
 
         processedOrders = orders.size();
@@ -109,16 +118,22 @@ void loadOrders()
     }
 }
 
-    int main()
+int main()
+{
+
+    while (true)
     {
+        int before = processedOrders;
 
-        while (true)
+        loadOrders();
+
+        if (processedOrders != before)
         {
-            loadOrders();
-
-            std::this_thread::sleep_for(
-                std::chrono::seconds(2));
+            std::cout << "New orders processed\n";
         }
 
-        return 0;
+        std::this_thread::sleep_for(
+            std::chrono::seconds(2));
     }
+    return 0;
+}

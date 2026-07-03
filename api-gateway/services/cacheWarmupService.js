@@ -12,15 +12,15 @@ async function warmCache()
             "SELECT * FROM orders"
         );
 
-    await client.set(
-        "orders",
-        JSON.stringify(
-            result.rows
-        ),
-        {
-            EX: 60
-        }
-    );
+    // await client.set(
+    //     "orders",
+    //     JSON.stringify(
+    //         result.rows
+    //     ),
+    //     {
+    //         EX: 60
+    //     }
+    // );
 
     console.log(
         "CACHE READY"

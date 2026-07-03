@@ -1,24 +1,23 @@
 const pool = require("../database/db");
-const client = require("../cache/redisClient");
 
 const orders = [ ];
 
 exports.getOrders = async () => {
-  const cachedOrders = await client.get("orders");
+  // const cachedOrders = await client.get("orders");
 
-  if (cachedOrders) {
-    console.log("READING FROM REDIS");
+  // if (cachedOrders) {
+  //   console.log("READING FROM REDIS");
 
-    return JSON.parse(cachedOrders);
-  }
+  //   return JSON.parse(cachedOrders);
+  // }
 
-  console.log("READING FROM POSTGRES");
+  // console.log("READING FROM POSTGRES");
 
   const result = await pool.query("SELECT * FROM orders");
 
-  await client.set("orders", JSON.stringify(result.rows), {
-    EX: 60,
-  });
+  // await client.set("orders", JSON.stringify(result.rows), {
+  //   EX: 60,
+  // });
 
   return result.rows;
 };
@@ -47,7 +46,7 @@ exports.addOrder = async (order) => {
     [
       order.orderId,
       order.userId,
-      true,
+      order.isBuy,
       order.price,
       order.quantity,
       order.status,
@@ -55,21 +54,21 @@ exports.addOrder = async (order) => {
   );
   const result = await pool.query("SELECT * FROM orders");
 
-  await client.set(`order:${order.orderId}`, JSON.stringify(order), {
-    EX: 60,
-  });
+  // await client.set(`order:${order.orderId}`, JSON.stringify(order), {
+  //   EX: 60,
+  // });
 };
 
 exports.findOrderById = async (orderId) => {
-  const cachedOrder = await client.get(`order:${orderId}`);
+  // const cachedOrder = await client.get(`order:${orderId}`);
 
-  if (cachedOrder) {
-    console.log("ORDER FROM REDIS");
+  // if (cachedOrder) {
+  //   console.log("ORDER FROM REDIS");
 
-    return JSON.parse(cachedOrder);
-  }
+  //   return JSON.parse(cachedOrder);
+  // }
 
-  console.log("ORDER FROM POSTGRES");
+  // console.log("ORDER FROM POSTGRES");
 
   const result = await pool.query(
     `
@@ -80,11 +79,11 @@ exports.findOrderById = async (orderId) => {
     [orderId],
   );
 
-  if (result.rows[0]) {
-    await client.set(`order:${orderId}`, JSON.stringify(result.rows[0]), {
-      EX: 60,
-    });
-  }
+  // if (result.rows[0]) {
+  //   await client.set(`order:${orderId}`, JSON.stringify(result.rows[0]), {
+  //     EX: 60,
+  //   });
+  // }
 
   return result.rows[0];
 };
@@ -98,7 +97,7 @@ exports.deleteOrder = async (orderId) => {
     [orderId],
   );
 
-  await client.del("orders");
+  // await client.del("orders");
 
   return result.rowCount > 0;
 };
@@ -115,7 +114,7 @@ exports.updateOrder = async (orderId, price, quantity) => {
     [price, quantity, orderId],
   );
 
-  await client.del("orders");
+  // await client.del("orders");
 
   return result.rowCount > 0;
 };
