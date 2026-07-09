@@ -1,26 +1,24 @@
+
+const fs = require("fs");
 const pool = require("../database/db");
 
-const orders = [ ];
+const orders = [];
 
 exports.getOrders = async () => {
-  // const cachedOrders = await client.get("orders");
 
-  // if (cachedOrders) {
-  //   console.log("READING FROM REDIS");
+    console.log("===== GET ORDERS =====");
 
-  //   return JSON.parse(cachedOrders);
-  // }
+    const data = fs.readFileSync(
+        "./data/orders.json",
+        "utf8"
+    );
 
-  // console.log("READING FROM POSTGRES");
+    console.log(data);
 
-  const result = await pool.query("SELECT * FROM orders");
-
-  // await client.set("orders", JSON.stringify(result.rows), {
-  //   EX: 60,
-  // });
-
-  return result.rows;
+    return JSON.parse(data);
 };
+
+
 exports.addOrder = async (order) => {
   await pool.query(
     `
@@ -89,17 +87,21 @@ exports.findOrderById = async (orderId) => {
 };
 
 exports.deleteOrder = async (orderId) => {
-  const result = await pool.query(
-    `
-            DELETE FROM orders
-            WHERE order_id = $1
-            `,
-    [orderId],
-  );
+  const data = fs.readFileSync("./data/orders.json", "utf8");
 
-  // await client.del("orders");
+  const orders = JSON.parse(data);
 
-  return result.rowCount > 0;
+  const index = orders.findIndex((order) => order.orderId === orderId);
+
+  if (index === -1) {
+    return null;
+  }
+
+  const deletedOrder = orders.splice(index, 1)[0];
+
+  fs.writeFileSync("./data/orders.json", JSON.stringify(orders, null, 4));
+
+  return deletedOrder;
 };
 
 exports.updateOrder = async (orderId, price, quantity) => {
@@ -120,13 +122,11 @@ exports.updateOrder = async (orderId, price, quantity) => {
 };
 
 exports.getAllOrders = async () => {
-
-    const result = await pool.query(`
+  const result = await pool.query(`
         SELECT *
         FROM orders
         ORDER BY order_id DESC
     `);
 
-    return result.rows;
+  return result.rows;
 };
-

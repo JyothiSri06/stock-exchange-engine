@@ -7,7 +7,7 @@ const { getIO } = require("../socket");
 
 exports.getOrders = async (req, res) => {
   try {
-    const orders = await orderService.getAllOrders();
+    const orders = await orderService.getOrders();
 
     res.json(orders);
   } catch (error) {
@@ -33,8 +33,7 @@ exports.createOrder = async (req, res) => {
 
     console.log("Step 1");
 
-    const existingOrder =
-      await orderService.findOrderById(orderId);
+    const existingOrder = await orderService.findOrderById(orderId);
 
     console.log("Step 2");
 
@@ -74,9 +73,7 @@ exports.createOrder = async (req, res) => {
     res.json({
       message: "Order stored",
     });
-
   } catch (err) {
-
     console.error("===== ERROR =====");
     console.error(err);
 
@@ -87,41 +84,31 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.deleteOrder = async (req, res) => {
-  const orderId = req.params.orderId;
+  try {
+    const { orderId } = req.params;
 
-  const deleted = await orderService.deleteOrder(orderId);
+    const deletedOrder = await orderService.deleteOrder(orderId);
 
-  if (!deleted) {
-    return res.status(404).json({
-      error: "Order not found",
+
+    if (!deletedOrder) {
+      return res.status(404).json({
+        message: "Order not found",
+      });
+    }
+
+    getIO().emit("order-deleted", deletedOrder);
+
+    console.log(`[SOCKET] Deleted ${deletedOrder.orderId}`);
+
+    res.json({
+      message: "Order deleted",
+      order: deletedOrder,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      message: "Failed to delete order",
     });
   }
-
-  res.json({
-    message: "Order deleted",
-  });
-};
-
-exports.updateOrder = async (req, res) => {
-  const orderId = req.params.orderId;
-
-  const { price, quantity } = req.body;
-
-  if (!price || !quantity) {
-    return res.status(400).json({
-      error: "Missing required fields",
-    });
-  }
-
-  const updated = await orderService.updateOrder(orderId, price, quantity);
-
-  if (!updated) {
-    return res.status(404).json({
-      error: "Order not found",
-    });
-  }
-
-  res.json({
-    message: "Order updated",
-  });
 };

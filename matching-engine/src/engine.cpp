@@ -118,8 +118,22 @@ void loadOrders()
     }
 }
 
+void initializeTradeCounter()
+{
+    std::ifstream file("../api-gateway/data/trades.json");
+
+    json trades;
+    file >> trades;
+
+    int lastTradeNumber = trades.size();
+
+    Trade::tradeCounter = lastTradeNumber + 1;
+}
+
 int main()
 {
+
+    initializeTradeCounter();
 
     while (true)
     {

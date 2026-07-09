@@ -90,8 +90,32 @@ function Dashboard() {
 
   }, []);
 
+  useEffect(() => {
 
-  
+    const handleOrderDeleted = () => {
+
+      console.log("[FRONTEND] Order Deleted");
+
+      loadOrders();
+
+    };
+
+    socket.on(
+      "order-deleted",
+      handleOrderDeleted
+    );
+
+    return () => {
+
+      socket.off(
+        "order-deleted",
+        handleOrderDeleted
+      );
+
+    };
+
+  }, []);
+
   return (
     <div>
 

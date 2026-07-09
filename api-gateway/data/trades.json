@@ -1,26 +1,42 @@
 [
     {
-        "buyerId": "BUUYER1",
+        "buyerId": "BUYER4",
         "price": 90.0,
         "quantity": 5,
         "sellerId": "SELLER",
-        "timestamp": "Fri Jul 03 09:03:17 2026\n",
+        "timestamp": "Thu Jul 09 10:22:03 2026\n",
         "tradeId": "T1"
     },
     {
-        "buyerId": "BUYER2",
+        "buyerId": "BUYER4",
         "price": 150.0,
         "quantity": 5,
         "sellerId": "SELLER2",
-        "timestamp": "Fri Jul 03 09:06:50 2026\n",
+        "timestamp": "Thu Jul 09 10:22:03 2026\n",
         "tradeId": "T2"
     },
     {
-        "buyerId": "BUYER2",
+        "buyerId": "BUYER4",
         "price": 200.0,
         "quantity": 2,
         "sellerId": "SELLER3",
-        "timestamp": "Fri Jul 03 09:07:52 2026\n",
+        "timestamp": "Thu Jul 09 10:22:03 2026\n",
         "tradeId": "T3"
+    },
+    {
+        "buyerId": "BUYER4",
+        "price": 300.0,
+        "quantity": 30,
+        "sellerId": "SELLER4",
+        "timestamp": "Thu Jul 09 10:22:03 2026\n",
+        "tradeId": "T4"
+    },
+    {
+        "buyerId": "BUYER4",
+        "price": 20.0,
+        "quantity": 3,
+        "sellerId": "SELLER5",
+        "timestamp": "Thu Jul 09 10:25:06 2026\n",
+        "tradeId": "T5"
     }
 ]

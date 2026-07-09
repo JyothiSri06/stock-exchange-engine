@@ -20,9 +20,9 @@ router.delete(
     orderController.deleteOrder
 );
 
-router.put(
-    "/:orderId",
-    orderController.updateOrder
-);
+// router.put(
+//     "/:orderId",
+//     orderController.updateOrder
+// );
 
 module.exports = router;
